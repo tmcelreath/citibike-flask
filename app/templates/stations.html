@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Stations{% endblock %}
+{% block head %}
+    {{ super() }}
+
+        <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDY0kkJiTPVd2U7aTOAwhc9ySH6oHxOIYM&sensor=false"></script>
+        <script> 
+            var map;
+            var myCenter=new google.maps.LatLng(40.7284186, -73.98713956);
+            var marker;
+
+            function initialize() {
+
+                var mapProp = {
+                  center:myCenter,
+                  zoom:13,
+                  disableDefaultUI:true,   
+                  mapTypeId:google.maps.MapTypeId.ROADMAP
+                  };
+
+                map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
+
+                {% for station in stations %}
+                    dropMarker({{ station['lat'] }}, {{ station['lon'] }})
+                {% endfor %}
+
+           }
+
+            google.maps.event.addDomListener(window, 'load', initialize);;
+
+            function dropMarker(lat, lon) {
+                var latlon =  new google.maps.LatLng(Number(lat), Number(lon));
+                var marker = new google.maps.Marker({
+                    position: latlon,
+                    map: map,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                            scale: 1
+                    },
+                    draggable: false,
+                    title:"Drag me!"
+                })
+            }
+
+        </script>
+
+{% endblock %}
+{% block body %}
+<h2>Stations</h2>
+
+<div id="googleMap" style="width:900px;height:700px;"></div>
+{% for station in stations %}
+<p><a href='#' onclick='dropMarker({{ station['lat'] }}, {{ station['lon'] }})'>Station {{ station['id'] }}</a> : {{ station }}
+{% endfor %}
+{% endblock %}
