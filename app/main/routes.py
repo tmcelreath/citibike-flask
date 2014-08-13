@@ -1,6 +1,5 @@
 from . import main
-from flask import render_template, jsonify, g
-from bson.json_util import dumps
+from flask import render_template, jsonify, g, request
 
 @main.route('/', methods=['GET'])
 def index():
@@ -51,6 +50,43 @@ def api_station_all():
         'next': '',
         'status': 200
     })
+
+@main.route('/api/station/geosearch/', methods=['GET'])
+def api_station_geo_search():
+    lat = float(request.args.get('lat'))
+    lon = float(request.args.get('lon'))
+    radius = request.args.get('radius')
+    limit = request.args.get('limit')
+
+    if radius:
+        radius = int(radius)
+    else:
+        radius = 500
+
+    if limit:
+        limit = int(limit)
+    else:
+        limit = 10
+
+    stations_cursor = g.mongo.citibike.stations.find({
+        'geoloc':{
+            '$near':{
+                '$geometry': {
+                    'type': "Point",
+                    'coordinates': [lon, lat]},
+                '$maxDistance': radius }
+        }
+    }).limit(limit)
+    stations = []
+    for station in stations_cursor:
+        stations.append(create_station_record(station))
+    return jsonify({
+        'payload': stations,
+        'prev': '',
+        'next': '',
+        'status': 200
+    })
+
 
 def create_station_record(row):
     record = {
