@@ -16,11 +16,11 @@ class Config(object):
 class DevelopmentConfig(Config):
     """ Dev config """
     DEBUG = True
-    SECRET_KEY = 'ADMIN'
+    SECRET_KEY = 'DEVKEY'
     DEBUG_TB_PANELS = (
-        'flask.ext.debugtoolbar.panels.versions.VersionDebugPanel'
-        'flask.ext.debugtoolbar.panels.timer.TimerDebugPanel',
-        'flask.ext.debugtoolbar.panels.headers.HeaderDebugPanel',
+        #'flask.ext.debugtoolbar.panels.versions.VersionDebugPanel'
+        #'flask.ext.debugtoolbar.panels.timer.TimerDebugPanel',
+        #'flask.ext.debugtoolbar.panels.headers.HeaderDebugPanel',
         'flask.ext.debugtoolbar.panels.request_vars.RequestVarsDebugPanel',
         'flask.ext.debugtoolbar.panels.template.TemplateDebugPanel',
         'flask.ext.debugtoolbar.panels.logger.LoggingPanel',
