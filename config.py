@@ -15,6 +15,8 @@ class Config(object):
 
 class DevelopmentConfig(Config):
     """ Dev config """
+    MONGO_HOST = os.getenv('CITIBIKE_MONGO_HOST', 'localhost')
+    MONGO_DBNAME = 'citibike'
     DEBUG = True
     SECRET_KEY = 'DEVKEY'
     DEBUG_TB_PANELS = (

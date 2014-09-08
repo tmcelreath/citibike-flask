@@ -14,7 +14,7 @@ def create_app(config_name):
     bootstrap.init_app(app)
 
     if not app.debug and not app.testing:
-        from flask.ext.sslify = SSLify
+        from flask.ext.sslify import SSLify
         sslify = SSLify(app)
 
     from .main import main as main_blueprint

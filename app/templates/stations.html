@@ -2,54 +2,27 @@
 {% block title %}Stations{% endblock %}
 {% block head %}
     {{ super() }}
-
-        <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDY0kkJiTPVd2U7aTOAwhc9ySH6oHxOIYM&sensor=false"></script>
-        <script> 
-            var map;
-            var myCenter=new google.maps.LatLng(40.7284186, -73.98713956);
-            var marker;
-
-            function initialize() {
-
-                var mapProp = {
-                  center:myCenter,
-                  zoom:13,
-                  disableDefaultUI:true,   
-                  mapTypeId:google.maps.MapTypeId.ROADMAP
-                  };
-
-                map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
-
-                {% for station in stations %}
-                    dropMarker({{ station['lat'] }}, {{ station['lon'] }})
-                {% endfor %}
-
-           }
-
-            google.maps.event.addDomListener(window, 'load', initialize);;
-
-            function dropMarker(lat, lon) {
-                var latlon =  new google.maps.LatLng(Number(lat), Number(lon));
-                var marker = new google.maps.Marker({
-                    position: latlon,
-                    map: map,
-                    icon: {
-                        path: google.maps.SymbolPath.CIRCLE,
-                            scale: 1
-                    },
-                    draggable: false,
-                    title:"Drag me!"
-                })
-            }
-
-        </script>
-
+     <style>
+        body { margin:0; padding:0; }
+        .map { position:absolute; top:0; bottom:0; width:100%; }
+  </style>
 {% endblock %}
 {% block body %}
 <h2>Stations</h2>
 
-<div id="googleMap" style="width:900px;height:700px;"></div>
-{% for station in stations %}
-<p><a href='#' onclick='dropMarker({{ station['lat'] }}, {{ station['lon'] }})'>Station {{ station['id'] }}</a> : {{ station }}
-{% endfor %}
+<div id='map-one' class='map'> </div>
+<script>
+    map = L.mapbox.map('map-one', 'mcelreath.jbh0nm5g');
+    map.setView([40.718217, -73.998284], 14);
+    map.addControl(L.mapbox.geocoderControl('mapbox.places-v1', {
+        keepOpen: true
+    }));
+    var marker = L.icon({
+        iconUrl: 'https://gmaps-samples.googlecode.com/svn/tags/torchrelay-video/maps/images/dot-red-transparent.png',
+        iconSize: [7, 7],
+    });
+    {% for station in stations %}
+        L.marker([{{ station['lat'] }}, {{ station['lon'] }}], {icon: marker}).addTo(map);
+   {% endfor %}
+</script>
 {% endblock %}
