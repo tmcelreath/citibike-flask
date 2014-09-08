@@ -3,13 +3,17 @@ from flask import render_template, g
 
 @main.route('/', methods=['GET'])
 def index():
-    """ GET: Home page """
+    """
+    GET: Home page
+    """
     return render_template('index.html')
 
 
 @main.route('/station/', methods=['GET'])
 def station_all():
-    """ GET: Fetch all stations """
+    """
+    GET: Fetch all stations
+    """
     stations_cursor = g.dao.find_all_stations()
     stations = []
     for station in stations_cursor:
@@ -21,7 +25,9 @@ def station_all():
 
 @main.route('/station/<int:station_id>', methods=['GET'])
 def station_view(station_id):
-    """ GET: Fetch a station by station_id """
+    """
+    GET: Fetch a station by station_id
+    """
     station = g.dao.find_station_by_id(int(station_id))
     record = create_station_record(station)
     return render_template('station.html', station=record)

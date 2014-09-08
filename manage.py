@@ -10,7 +10,6 @@ DEBUG_TOOLBAR = DebugToolbarExtension(app)
 
 manager = Manager(app)
 
-
 def make_shell_context():
     return dict(app=app)
 

@@ -1,16 +1,14 @@
 """ App initialization """
+import logging
 from flask import Flask, g
 from flask.ext.bootstrap import Bootstrap
-from config import config
 from flask.ext.pymongo import PyMongo
-import logging
+from flask_limiter import Limiter
+from config import config
 from citibike_dao import CitiBikeDAO
-
-bootstrap = Bootstrap()
 
 LOG_FILENAME = 'app.main.log'
 logging.basicConfig(filename=LOG_FILENAME, level=logging.DEBUG)
-
 
 def create_app(config_name):
     """ Factory function for creating application instances
@@ -20,19 +18,26 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
 
-    mongo = PyMongo(app)
+    mongo = PyMongo()
+    mongo.init_app(app)
 
+    bootstrap = Bootstrap()
+    bootstrap.init_app(app)
+
+    limiter = Limiter()
+    limiter.init_app(app)
 
     @app.before_request
-    def connect_db():
+    def pre_request():
         g.dao = CitiBikeDAO(mongo)
         g.mongo = mongo.db
         g.logging = logging
 
-    bootstrap.init_app(app)
-
     from main import main as main_blueprint
     from api import api as api_blueprint
+
+    limiter.limit('30/minute')(main_blueprint)
+    limiter.limit('100/minute')(api_blueprint)
 
     app.register_blueprint(main_blueprint, url_prefix='')
     app.register_blueprint(api_blueprint, url_prefix='/api')

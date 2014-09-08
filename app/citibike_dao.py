@@ -29,3 +29,19 @@ class CitiBikeDAO:
                 {"$group": {"_id": "$id", "avgBike": {"$avg": "$bike"}, "avgDock": {"$avg": "$dock"}}}
             ]
         )
+
+    def get_rides_by_bike_id(self, bike_id, start_date, end_date):
+        return self.db.ride.find(
+            {'bikeid': bike_id, 'start_time': {'$gte': start_date, '$lte': end_date}}
+        );
+
+    def get_rides_by_station_id(self, station_id, start_date, end_date):
+        return self.db.ride.find(
+            {'start_station': station_id, 'start_time': {'$gte': start_date, '$lte': end_date}}
+        );
+
+
+    def get_station_status(self, station_id, start_date, end_date):
+        return self.db.status.find(
+            {'id': station_id, 'date.dt': {'$gte': start_date, '$lte': end_date}}
+        );
