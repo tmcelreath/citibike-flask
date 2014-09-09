@@ -14,12 +14,7 @@ def station_all():
     """
     GET: Fetch all stations
     """
-    stations_cursor = g.dao.find_all_stations()
-    stations = []
-    for station in stations_cursor:
-        record = create_station_record(station)
-        stations.append(record)
-        g.logging.error(record)
+    stations = g.dao.find_all_stations()
     return render_template('stations.html', stations=stations)
 
 

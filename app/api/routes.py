@@ -7,15 +7,11 @@ def api_station_all():
     """
     GET: Fetch all station records
     """
-    stations_cursor = g.dao.find_all_stations()
-    stations = []
-    for station in stations_cursor:
-        stations.append(create_station_record(station))
-        g.logging.debug(station)
+    stations = g.dao.find_all_stations()
     return create_response(stations)
 
 
-@api.route('/station/<int:station_id>', methods=['GET'])
+@api.route('/station/<int:station_id>/', methods=['GET'])
 def api_station_view(station_id):
     """
     GET: Fetch a station by station_id
@@ -23,9 +19,7 @@ def api_station_view(station_id):
         - station_id
     """
     station = g.dao.find_station_by_id(int(station_id))
-    g.logging.debug('Station #{}, {}'.format(station_id, station))
-    record = create_station_record(station)
-    return create_response(record)
+    return create_response(station)
 
 
 @api.route('/station/geosearch/', methods=['GET'])
@@ -50,10 +44,7 @@ def api_station_geo_search():
         limit = int(limit)
     else:
         limit = 10
-    stations_cursor = g.dao.find_stations_by_geo_location(lon, lat, radius, limit)
-    stations = []
-    for station in stations_cursor:
-        stations.append(create_station_record(station))
+    stations = g.dao.find_stations_by_geo_location(lon, lat, radius, limit)
     return create_response(stations)
 
 
@@ -91,11 +82,7 @@ def api_get_station_status(station_id):
         end_date = start_date
     end_date = date_utils.get_next_day(end_date)
     g.logging.debug('station_id: {}, start_date: {}, end_date: {}'.format(station_id, start_date, end_date))
-    status_cursor = g.dao.get_station_status(start_date, start_date, end_date)
-    statuses = []
-    for status in status_cursor:
-        row = {'stat': status['stat'], 'dock': status['dock'], 'bike': status['bike'], 'date': status['date']['dt']}
-        statuses.append(row)
+    statuses = g.dao.get_station_status(station_id, start_date, end_date)
     return create_response(statuses)
 
 
@@ -116,12 +103,7 @@ def api_get_rides_by_station(station_id):
     end_date = date_utils.get_next_day(end_date)
     #g.logging.debug('start date: {}'.format(start_date))
     #g.logging.debug('end date: {}'.format(end_date))
-    rides_cursor = g.dao.get_rides_by_station_id(station_id, start_date, end_date)
-    rides = []
-    for ride in rides_cursor:
-        ride_record = create_ride_record(ride)
-        rides.append(ride_record)
-        #app.logger.debug(ride_record)
+    rides = g.dao.get_rides_by_station_id(station_id, start_date, end_date)
     return create_response(rides)
 
 
@@ -142,37 +124,9 @@ def api_get_rides_by_bike(bike_id):
     end_date = date_utils.get_next_day(end_date)
     g.logging.debug('start date: {}'.format(start_date))
     g.logging.debug('end date: {}'.format(end_date))
-    rides_cursor = g.dao.get_rides_by_bike_id(bike_id, start_date, end_date)
-    rides = []
-    for ride in rides_cursor:
-        ride_record = create_ride_record(ride)
-        rides.append(ride_record)
-        #app.logger.debug(ride_record)
+    rides = g.dao.get_rides_by_bike_id(bike_id, start_date, end_date)
     return create_response(rides)
 
-
-def create_station_record(row):
-    record = {
-        'id': row['id'],
-        'name': row['name'],
-        'lat': row['loc']['coordinates'][1],
-        'lon': row['loc']['coordinates'][0]
-    }
-    return record
-
-def create_ride_record(row):
-    record = {
-        'bikeid': row['bikeid'],
-        'duration': row['duration'],
-        'start_time': row['start_time'],
-        'start_station': row['start_station'],
-        'end_time': row['end_time'],
-        'end_station': row['end_station'],
-        'user_type': row['user_type'],
-        'gender': row['gender'],
-        'birth_year': row['birth_year']
-    }
-    return record
 
 def get_station_average(station_ids, hour, weekend):
     print(station_ids, hour, weekend)

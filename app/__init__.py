@@ -4,11 +4,19 @@ from flask import Flask, g
 from flask.ext.bootstrap import Bootstrap
 from flask.ext.pymongo import PyMongo
 from flask_limiter import Limiter
+from flask_debugtoolbar import DebugToolbarExtension
 from config import config
 from citibike_dao import CitiBikeDAO
 
 LOG_FILENAME = 'app.main.log'
 logging.basicConfig(filename=LOG_FILENAME, level=logging.DEBUG)
+
+mongo = PyMongo()
+bootstrap = Bootstrap()
+limiter = Limiter()
+
+def get_mongo():
+    return mongo
 
 def create_app(config_name):
     """ Factory function for creating application instances
@@ -18,13 +26,10 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
 
-    mongo = PyMongo()
+    DEBUG_TOOLBAR = DebugToolbarExtension(app)
+
     mongo.init_app(app)
-
-    bootstrap = Bootstrap()
     bootstrap.init_app(app)
-
-    limiter = Limiter()
     limiter.init_app(app)
 
     @app.before_request
