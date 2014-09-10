@@ -1,6 +1,5 @@
 import unittest
 from app import create_app
-#import create_app
 
 class URLTestCase(unittest.TestCase):
 
@@ -22,10 +21,14 @@ class URLTestCase(unittest.TestCase):
 
         self.api_urls = {
             'station': '/api/station/',
-            'station_geo': '/api/station/geosearch/?lat={}&lon={}&radius={}&limit={}'.format(self.test_lat, self.test_lon, self.test_radius, self.test_limit),
-            'station_rides': '/api/station/{}/rides?start_date=20140501&end_date=20140502'.format(self.test_station),
-            'station_id': '/api/station/{}/'.format(self.test_station),
-            'station_avg': '/api/station/{}/avg?hour=12&day=1'.format(self.test_station),
+            'station_geo': '/api/station/geosearch/?lat={}&lon={}&radius={}&limit={}'
+                .format(self.test_lat, self.test_lon, self.test_radius, self.test_limit),
+            'station_rides': '/api/station/{}/rides?start_date=20140501&end_date=20140502'
+                .format(self.test_station),
+            'station_id': '/api/station/{}/'
+                .format(self.test_station),
+            'station_avg': '/api/station/{}/avg?hour=12&day=1'
+                .format(self.test_station),
 
             }
         self.api_headers =  [('Content-Type', 'application/json')]

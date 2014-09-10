@@ -1,6 +1,5 @@
 class CitiBikeDAO:
 
-
     def __init__(self, mongo):
         self.db = mongo.db
 

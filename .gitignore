@@ -54,3 +54,6 @@ docs/_build/
 
 # IntelliJ Idea
 .idea/
+
+# Virtualenv
+venv/
