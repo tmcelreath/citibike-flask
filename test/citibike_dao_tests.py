@@ -1,3 +1,4 @@
+import os
 import unittest
 import logging
 from app import create_app, get_mongo
@@ -51,5 +52,19 @@ class CitibikeDAOTestCase(unittest.TestCase):
         stations = self.dao.find_stations_by_geo_location(lon, lat, 1, limit)
         self.assertEqual(len(stations), 1)
 
+    def test_get_station_averages(self):
+        test_name='test_get_station_averages'
+        stations = self.dao.get_station_averages([self.station_id], 12, [1])
+        self.assertEqual(len(stations), 2)
+        self.assertEqual(stations['result'][0]['_id'], self.station_id)
+        self.assertIsNotNone(stations['result'][0]['avgBike'])
+        self.assertIsNotNone(stations['result'][0]['avgDock'])
+        stations = self.dao.get_station_averages([72, 79], 12, [1])
+        self.assertIsNotNone(stations['result'][0]['avgBike'])
+        self.assertIsNotNone(stations['result'][0]['avgDock'])
+        self.assertIsNotNone(stations['result'][1]['avgBike'])
+        self.assertIsNotNone(stations['result'][1]['avgDock'])
+
 if __name__ == '__main__':
     unittest.main()
+
