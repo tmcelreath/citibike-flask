@@ -65,6 +65,11 @@ class CitibikeDAOTestCase(unittest.TestCase):
         self.assertIsNotNone(stations['result'][1]['avgBike'])
         self.assertIsNotNone(stations['result'][1]['avgDock'])
 
+    def test_get_rides_by_bike_id(self):
+        test_name='test_get_rides_by_bike_id'
+        rides = self.dao.get_rides_by_bike_id('16848', '20140501', '20140502')
+        #self.assertGreater(len(rides), 5)
+
 if __name__ == '__main__':
     unittest.main()
 
